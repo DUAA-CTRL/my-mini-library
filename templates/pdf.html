@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09070e">
+<title>{{book.title}} · My Library</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#09070e;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
+.reader{height:100dvh;display:flex;flex-direction:column}
+.toolbar{height:64px;min-height:64px;display:flex;align-items:center;gap:8px;padding:8px max(10px,env(safe-area-inset-left)) 8px max(10px,env(safe-area-inset-right));background:#15121d;border-bottom:1px solid #302b3b}
+.toolbar a,.toolbar button{border:1px solid #40394d;background:#211d29;color:#fff;border-radius:10px;padding:9px 12px;text-decoration:none;font-size:14px;cursor:pointer}
+.toolbar .title{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+.viewer{flex:1;background:#3c3940}
+.viewer iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+.note{display:none;text-align:center;padding:8px;background:#15121d;color:#aaa4b4;font-size:12px}
+@media(max-width:600px){.toolbar{height:58px;min-height:58px}.toolbar a,.toolbar button{padding:8px 9px}.toolbar .title{font-size:13px}.note{display:block}}
+</style>
+</head>
+<body>
+<div class="reader">
+  <div class="toolbar">
+    <a href="/" aria-label="Back">← Back</a>
+    <div class="title">{{book.sticker}} {{book.title}}</div>
+    <button onclick="sharePdf()">Share</button>
+    <a href="{{url_for('download_pdf',id=book.id)}}">Download</a>
+  </div>
+  <div class="note">If your phone shows a blank PDF, tap Download or Open PDF in a new tab.</div>
+  <div class="viewer">
+    <iframe src="{{url_for('pdf',id=book.id)}}" title="PDF reader"></iframe>
+  </div>
+</div>
+<script>
+async function sharePdf(){
+ const url=location.origin+"{{url_for('pdf',id=book.id)}}";
+ if(navigator.share){
+   try{await navigator.share({title:{{book.title|tojson}},text:"Read this PDF from My Library",url});return}catch(e){}
+ }
+ try{
+   await navigator.clipboard.writeText(url);
+   alert("PDF link copied. Send it to your friend.");
+ }catch(e){
+   prompt("Copy this PDF link:",url);
+ }
+}
+</script>
+</body>
+</html>

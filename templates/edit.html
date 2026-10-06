@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit · My Library</title><link rel="stylesheet" href="{{url_for('static',filename='style.css')}}"></head>
+<body><div class="phone"><header class="topbar"><a class="circle-btn back" href="/">‹</a><div class="top-title">Edit Book</div><div></div></header>
+<section class="edit-wrap"><h2>Edit your library item</h2><form action="/edit/{{book.id}}" method="post" enctype="multipart/form-data" class="edit-form">
+<label>Title<input name="title" value="{{book.title}}" required></label>
+<label>Genre<select name="genre">{% for g in genres %}<option {% if g==book.genre %}selected{% endif %}>{{g}}</option>{% endfor %}</select></label>
+<label>Status<select name="status"><option value="reading" {% if book.status=='reading' %}selected{% endif %}>reading</option><option value="want to read" {% if book.status=='want to read' %}selected{% endif %}>want to read</option><option value="finished" {% if book.status=='finished' %}selected{% endif %}>finished</option></select></label>
+<label>Sticker<select name="sticker">{% for s in stickers %}<option {% if s==book.sticker %}selected{% endif %}>{{s}}</option>{% endfor %}</select></label>
+<label>Replace PDF<input type="file" name="pdf" accept="application/pdf"></label>
+<button class="add-btn">Save changes</button></form></section></div></body></html>

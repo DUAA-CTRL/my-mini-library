@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09070e">
+<title>My Library</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="phone">
+  <header class="topbar">
+    <button class="circle-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Top">×</button>
+    <div class="top-title">My Library</div>
+    <div class="top-actions">
+      <button class="circle-btn small" onclick="toggleSearch()" aria-label="Search">⌕</button>
+      <button class="circle-btn small" onclick="document.getElementById('pdf').click()" aria-label="Upload">↥</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="stars">•　　·　　　 •</div>
+    <div class="moon">◒</div>
+    <div class="hero-title">My Library</div>
+    <div class="hero-sub">your PDFs, stored online so you can open them from your phone, tablet or laptop</div>
+  </section>
+
+  <section class="add-card">
+    <form action="/add" method="post" enctype="multipart/form-data" id="addForm">
+      <input id="pdf" type="file" name="pdf" accept="application/pdf,.pdf" hidden onchange="showFile(this)">
+      <div class="file-row">
+        <button type="button" class="choose" onclick="document.getElementById('pdf').click()">Choose PDF</button>
+        <span id="fileName">no file selected</span>
+      </div>
+      <div class="field-row">
+        <input name="title" placeholder="Book title" required>
+        <select name="sticker" aria-label="Sticker">{% for s in stickers %}<option>{{s}}</option>{% endfor %}</select>
+      </div>
+      <div class="field-row">
+        <select name="genre" aria-label="Genre">{% for g in genres %}<option>{{g}}</option>{% endfor %}</select>
+        <button class="add-btn">Add PDF</button>
+      </div>
+      <div class="stored">☁️ Saved in MongoDB Atlas GridFS — not on your phone or laptop.</div>
+    </form>
+  </section>
+
+  <div id="searchPanel" class="search-panel {% if q %}open{% endif %}">
+    <form action="/" method="get">
+      <input name="q" value="{{q}}" placeholder="Search your library...">
+      <button>Search</button>
+    </form>
+  </div>
+
+  <div class="tabs">
+    <a class="{{'active' if active_genre=='All' else ''}}" href="/">All</a>
+    {% for g in genres %}
+    <a class="{{'active' if active_genre==g else ''}}" href="/?genre={{g}}">{{g}}</a>
+    {% endfor %}
+  </div>
+
+  {% if books %}
+  <section class="shelf">
+    {% for b in books %}
+    <article class="book-card">
+      <a class="book-cover" href="{{ url_for('read_pdf', id=b.id) }}" aria-label="Read {{b.title}}">
+        <span>{{b.sticker}}</span>
+      </a>
+      <div class="book-title" title="{{b.title}}">{{b.title}}</div>
+      <div class="book-meta">{{b.genre|lower}} · {{b.status|replace('_',' ')}}</div>
+      <div class="card-actions">
+        {% if b.file_id %}
+        <a class="primary-link" href="{{url_for('read_pdf',id=b.id)}}">Read</a>
+        <a href="{{url_for('download_pdf',id=b.id)}}">Download</a>
+        {% endif %}
+        <a href="{{url_for('edit_page',id=b.id)}}">Edit</a>
+        <form action="{{url_for('delete_book',id=b.id)}}" method="post" onsubmit="return confirm('Delete this PDF?')"><button>Delete</button></form>
+      </div>
+    </article>
+    {% endfor %}
+  </section>
+  {% else %}
+  <div class="empty">No PDFs here yet. Add one above.</div>
+  {% endif %}
+
+  <section class="highlight-section">
+    <h2>Underline &amp; highlight</h2>
+    <div class="highlight-card">
+      In thermodynamics, <mark>entropy is a measure of disorder</mark> within a system, and it tends to increase over time in any isolated system.
+    </div>
+  </section>
+
+  <section class="word-section">
+    <h2>Ask about a word</h2>
+    <div class="chat-card" id="chatBox">
+      <div class="bubble user-bubble">what does "entropy" mean?</div>
+      <div class="bubble bot-bubble">A measure of disorder or randomness in a system — the more spread out the energy, the higher the entropy.</div>
+      <form id="wordForm" class="ask-row">
+        <input id="wordInput" placeholder="what does this word/phrase mean?" autocomplete="off">
+        <button>Ask</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="word-section">
+    <h2>Free library chatbot</h2>
+    <div class="chat-card" id="assistantBox">
+      <div class="bubble bot-bubble">Hi! Ask me about your books or say “meaning of meticulous”.</div>
+      <form id="chatForm" class="ask-row">
+        <input id="chatInput" placeholder="ask your library..." autocomplete="off">
+        <button>Ask</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>Personal library • PDFs live in MongoDB Atlas • Open the same live link on any phone to access the same collection.</footer>
+</div>
+<script>
+function toggleSearch(){document.getElementById('searchPanel').classList.toggle('open')}
+function showFile(input){document.getElementById('fileName').textContent=input.files[0]?.name||'no file selected'}
+async function postForm(url,data){
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data)});
+    return await r.json();
+  }catch(e){return {answer:'Network error. Please try again.'}}
+}
+document.getElementById('wordForm').addEventListener('submit',async e=>{
+ e.preventDefault(); const input=document.getElementById('wordInput'), text=input.value.trim(); if(!text)return;
+ const box=document.getElementById('chatBox'); box.insertAdjacentHTML('beforeend',`<div class="bubble user-bubble">${escapeHtml(text)}</div>`);
+ const out=await postForm('/api/meaning',{word:text}); box.insertAdjacentHTML('beforeend',`<div class="bubble bot-bubble">${escapeHtml(out.answer||'No answer')}</div>`); input.value='';
+});
+document.getElementById('chatForm').addEventListener('submit',async e=>{
+ e.preventDefault(); const input=document.getElementById('chatInput'), text=input.value.trim(); if(!text)return;
+ const box=document.getElementById('assistantBox'); box.insertAdjacentHTML('beforeend',`<div class="bubble user-bubble">${escapeHtml(text)}</div>`);
+ const out=await postForm('/api/chat',{message:text}); box.insertAdjacentHTML('beforeend',`<div class="bubble bot-bubble">${escapeHtml(out.answer||'No answer')}</div>`); input.value='';
+});
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+</script>
+</body>
+</html>
