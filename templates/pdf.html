@@ -1,48 +1,1557 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#09070e">
-<title>{{book.title}} · My Library</title>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
+
+<meta
+  name="theme-color"
+  content="#09070e"
+>
+
+<title>{{ book.title }} · My Library</title>
+
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#09070e;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
-.reader{height:100dvh;display:flex;flex-direction:column}
-.toolbar{height:64px;min-height:64px;display:flex;align-items:center;gap:8px;padding:8px max(10px,env(safe-area-inset-left)) 8px max(10px,env(safe-area-inset-right));background:#15121d;border-bottom:1px solid #302b3b}
-.toolbar a,.toolbar button{border:1px solid #40394d;background:#211d29;color:#fff;border-radius:10px;padding:9px 12px;text-decoration:none;font-size:14px;cursor:pointer}
-.toolbar .title{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
-.viewer{flex:1;background:#3c3940}
-.viewer iframe{width:100%;height:100%;border:0;display:block;background:#fff}
-.note{display:none;text-align:center;padding:8px;background:#15121d;color:#aaa4b4;font-size:12px}
-@media(max-width:600px){.toolbar{height:58px;min-height:58px}.toolbar a,.toolbar button{padding:8px 9px}.toolbar .title{font-size:13px}.note{display:block}}
-</style>
-</head>
-<body>
-<div class="reader">
-  <div class="toolbar">
-    <a href="/" aria-label="Back">← Back</a>
-    <div class="title">{{book.sticker}} {{book.title}}</div>
-    <button onclick="sharePdf()">Share</button>
-    <a href="{{url_for('download_pdf',id=book.id)}}">Download</a>
-  </div>
-  <div class="note">If your phone shows a blank PDF, tap Download or Open PDF in a new tab.</div>
-  <div class="viewer">
-    <iframe src="{{url_for('pdf',id=book.id)}}" title="PDF reader"></iframe>
-  </div>
-</div>
-<script>
-async function sharePdf(){
- const url=location.origin+"{{url_for('pdf',id=book.id)}}";
- if(navigator.share){
-   try{await navigator.share({title:{{book.title|tojson}},text:"Read this PDF from My Library",url});return}catch(e){}
- }
- try{
-   await navigator.clipboard.writeText(url);
-   alert("PDF link copied. Send it to your friend.");
- }catch(e){
-   prompt("Copy this PDF link:",url);
- }
+
+* {
+  box-sizing: border-box;
 }
+
+html,
+body {
+
+  margin: 0;
+  width: 100%;
+  height: 100%;
+
+  background: #09070e;
+  color: white;
+
+  font-family: Arial, sans-serif;
+
+}
+
+body {
+  overflow: hidden;
+}
+
+.reader {
+
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.toolbar {
+
+  min-height: 62px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 8px;
+
+  background: #15121d;
+
+  border-bottom: 1px solid #302b3b;
+
+  z-index: 1000;
+
+}
+
+.toolbar a,
+.toolbar button {
+
+  border: 1px solid #40394d;
+
+  background: #211d29;
+
+  color: white;
+
+  border-radius: 10px;
+
+  padding: 9px 11px;
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+}
+
+.toolbar button.active {
+
+  background: #ffe66d;
+
+  color: #17131d;
+
+  border-color: #ffe66d;
+
+}
+
+.toolbar .title {
+
+  flex: 1;
+
+  min-width: 0;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  padding: 0 4px;
+
+}
+
+
+/* =====================================================
+   PDF VIEWER
+===================================================== */
+
+.viewer {
+
+  flex: 1;
+
+  overflow: auto;
+
+  background: #4a474d;
+
+  padding: 20px 10px 60px;
+
+}
+
+#pdfContainer {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 20px;
+
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.pdf-page {
+
+  position: relative;
+
+  background: white;
+
+  box-shadow:
+    0 4px 25px rgba(0,0,0,.45);
+
+}
+
+.pdf-page canvas {
+
+  display: block;
+
+}
+
+
+/* =====================================================
+   TEXT LAYER
+===================================================== */
+
+.textLayer {
+
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  line-height: 1;
+
+  opacity: 1;
+
+  text-align: initial;
+
+  forced-color-adjust: none;
+
+  transform-origin: 0 0;
+
+  z-index: 2;
+
+}
+
+.textLayer span,
+.textLayer br {
+
+  color: transparent;
+
+  position: absolute;
+
+  white-space: pre;
+
+  cursor: text;
+
+  transform-origin: 0% 0%;
+
+}
+
+.textLayer ::selection {
+
+  background: rgba(80,130,255,.35);
+
+}
+
+
+/* =====================================================
+   HIGHLIGHT LAYER
+===================================================== */
+
+.highlight-layer {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 3;
+
+  pointer-events: none;
+
+}
+
+
+/* =====================================================
+   HIGHLIGHT
+===================================================== */
+
+.highlight {
+
+  position: absolute;
+
+  background: rgba(255,230,80,.48);
+
+  border-radius: 3px;
+
+  pointer-events: auto;
+
+  cursor: pointer;
+
+  transition:
+    background .15s,
+    box-shadow .15s;
+
+}
+
+.highlight:hover {
+
+  background: rgba(255,205,50,.75);
+
+  box-shadow:
+    0 0 0 2px rgba(255,210,50,.35);
+
+}
+
+
+/* =====================================================
+   SELECTED HIGHLIGHT
+===================================================== */
+
+.highlight.selected {
+
+  background: rgba(255,180,30,.75);
+
+  box-shadow:
+    0 0 0 2px #ffcf4a;
+
+}
+
+
+/* =====================================================
+   HELP
+===================================================== */
+
+.help {
+
+  position: fixed;
+
+  bottom: 15px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  background: rgba(20,17,27,.94);
+
+  border: 1px solid #40394d;
+
+  border-radius: 12px;
+
+  padding: 9px 13px;
+
+  color: #d8d2df;
+
+  font-size: 12px;
+
+  z-index: 2000;
+
+  text-align: center;
+
+  transition: opacity .3s;
+
+}
+
+.help.hidden {
+
+  opacity: 0;
+
+  pointer-events: none;
+
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading {
+
+  position: fixed;
+
+  inset: 62px 0 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #3c3940;
+
+  z-index: 500;
+
+  color: white;
+
+}
+
+.loading.hidden {
+
+  display: none;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px) {
+
+  .toolbar {
+
+    min-height: 58px;
+
+    padding: 6px;
+
+    overflow-x: auto;
+
+  }
+
+  .toolbar a,
+  .toolbar button {
+
+    padding: 8px;
+
+    font-size: 12px;
+
+  }
+
+  .toolbar .title {
+
+    min-width: 100px;
+
+  }
+
+  .viewer {
+
+    padding: 10px 5px 50px;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="reader">
+
+
+  <!-- ===================================================
+       TOOLBAR
+  ==================================================== -->
+
+  <div class="toolbar">
+
+
+    <a href="/">
+      ← Back
+    </a>
+
+
+    <div class="title">
+
+      {{ book.sticker }}
+      {{ book.title }}
+
+    </div>
+
+
+    <button
+      id="highlightBtn"
+      onclick="toggleHighlightMode()"
+    >
+      🖍️ Highlight
+    </button>
+
+
+    <button
+      id="removeHighlightBtn"
+      onclick="removeSelectedHighlight()"
+    >
+      🗑️ Remove
+    </button>
+
+
+    <button
+      onclick="saveAllHighlights()"
+    >
+      💾 Save
+    </button>
+
+
+    <button
+      onclick="sharePdf()"
+    >
+      Share
+    </button>
+
+
+    <a
+      href="{{ url_for('download_pdf', id=book.id) }}"
+    >
+      Download
+    </a>
+
+
+  </div>
+
+
+
+  <!-- ===================================================
+       LOADING
+  ==================================================== -->
+
+  <div
+    id="loading"
+    class="loading"
+  >
+
+    Loading PDF...
+
+  </div>
+
+
+
+  <!-- ===================================================
+       PDF VIEWER
+  ==================================================== -->
+
+  <div
+    id="viewer"
+    class="viewer"
+  >
+
+    <div
+      id="pdfContainer"
+    ></div>
+
+  </div>
+
+
+
+  <!-- ===================================================
+       HELP
+  ==================================================== -->
+
+  <div
+    id="help"
+    class="help"
+  >
+
+    Select text → tap Highlight 🖍️
+
+  </div>
+
+
+</div>
+
+
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs"
+  type="module"
+></script>
+
+
+<script type="module">
+
+import * as pdfjsLib from
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+
+
+/* =====================================================
+   PDF.JS WORKER
+===================================================== */
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+const PDF_URL =
+  "{{ url_for('pdf', id=book.id) }}";
+
+const BOOK_ID =
+  "{{ book.id }}";
+
+let pdfDocument = null;
+
+let allHighlights = [];
+
+let highlightMode = false;
+
+let selectedHighlightId = null;
+
+
+/* =====================================================
+   LOAD PDF
+===================================================== */
+
+async function loadPDF() {
+
+  try {
+
+    pdfDocument =
+      await pdfjsLib.getDocument(
+        PDF_URL
+      ).promise;
+
+
+    await renderAllPages();
+
+
+    await loadSavedHighlights();
+
+
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
+
+
+  } catch (error) {
+
+    console.error(
+      "PDF loading error:",
+      error
+    );
+
+    document
+      .getElementById("loading")
+      .textContent =
+        "Could not load PDF.";
+
+  }
+
+}
+
+
+/* =====================================================
+   RENDER ALL PAGES
+===================================================== */
+
+async function renderAllPages() {
+
+  const container =
+    document.getElementById(
+      "pdfContainer"
+    );
+
+
+  container.innerHTML = "";
+
+
+  for (
+    let pageNumber = 1;
+    pageNumber <= pdfDocument.numPages;
+    pageNumber++
+  ) {
+
+    await renderPage(
+      pageNumber
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   RENDER PAGE
+===================================================== */
+
+async function renderPage(
+  pageNumber
+) {
+
+  const page =
+    await pdfDocument.getPage(
+      pageNumber
+    );
+
+
+  const baseViewport =
+    page.getViewport({
+      scale: 1
+    });
+
+
+  const viewerWidth =
+    document
+      .getElementById("viewer")
+      .clientWidth;
+
+
+  const maxWidth =
+    Math.min(
+      viewerWidth - 20,
+      900
+    );
+
+
+  const scale =
+    Math.min(
+      1.8,
+      maxWidth /
+      baseViewport.width
+    );
+
+
+  const viewport =
+    page.getViewport({
+      scale
+    });
+
+
+  const pageDiv =
+    document.createElement(
+      "div"
+    );
+
+
+  pageDiv.className =
+    "pdf-page";
+
+
+  pageDiv.dataset.page =
+    pageNumber;
+
+
+  pageDiv.style.width =
+    `${viewport.width}px`;
+
+
+  pageDiv.style.height =
+    `${viewport.height}px`;
+
+
+  const canvas =
+    document.createElement(
+      "canvas"
+    );
+
+
+  const context =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  canvas.width =
+    Math.floor(
+      viewport.width
+    );
+
+
+  canvas.height =
+    Math.floor(
+      viewport.height
+    );
+
+
+  canvas.style.width =
+    `${viewport.width}px`;
+
+
+  canvas.style.height =
+    `${viewport.height}px`;
+
+
+  pageDiv.appendChild(
+    canvas
+  );
+
+
+  const highlightLayer =
+    document.createElement(
+      "div"
+    );
+
+
+  highlightLayer.className =
+    "highlight-layer";
+
+
+  pageDiv.appendChild(
+    highlightLayer
+  );
+
+
+  const textLayer =
+    document.createElement(
+      "div"
+    );
+
+
+  textLayer.className =
+    "textLayer";
+
+
+  pageDiv.appendChild(
+    textLayer
+  );
+
+
+  document
+    .getElementById(
+      "pdfContainer"
+    )
+    .appendChild(
+      pageDiv
+    );
+
+
+  await page.render({
+
+    canvasContext:
+      context,
+
+    viewport:
+      viewport
+
+  }).promise;
+
+
+  const textContent =
+    await page.getTextContent();
+
+
+  for (
+    const item of textContent.items
+  ) {
+
+    const span =
+      document.createElement(
+        "span"
+      );
+
+
+    span.textContent =
+      item.str;
+
+
+    const tx =
+      pdfjsLib.Util.transform(
+        viewport.transform,
+        item.transform
+      );
+
+
+    const x =
+      tx[4];
+
+    const y =
+      tx[5];
+
+
+    const fontHeight =
+      Math.sqrt(
+        tx[2] * tx[2] +
+        tx[3] * tx[3]
+      );
+
+
+    span.style.left =
+      `${x}px`;
+
+
+    span.style.top =
+      `${y - fontHeight}px`;
+
+
+    span.style.fontSize =
+      `${fontHeight}px`;
+
+
+    span.style.fontFamily =
+      "sans-serif";
+
+
+    textLayer.appendChild(
+      span
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   HIGHLIGHT MODE
+===================================================== */
+
+window.toggleHighlightMode =
+  function() {
+
+    highlightMode =
+      !highlightMode;
+
+
+    const button =
+      document.getElementById(
+        "highlightBtn"
+      );
+
+
+    if (highlightMode) {
+
+      button.classList.add(
+        "active"
+      );
+
+      button.textContent =
+        "🖍️ Highlight ON";
+
+
+      document
+        .getElementById(
+          "help"
+        )
+        .textContent =
+          "Text select karo → highlight automatically banega";
+
+
+    } else {
+
+      button.classList.remove(
+        "active"
+      );
+
+      button.textContent =
+        "🖍️ Highlight";
+
+
+      document
+        .getElementById(
+          "help"
+        )
+        .textContent =
+          "Select text → tap Highlight 🖍️";
+
+    }
+
+  };
+
+
+/* =====================================================
+   TEXT SELECTION
+===================================================== */
+
+document.addEventListener(
+  "mouseup",
+  async function() {
+
+    if (!highlightMode) {
+      return;
+    }
+
+
+    const selection =
+      window.getSelection();
+
+
+    if (
+      !selection ||
+      selection.isCollapsed
+    ) {
+
+      return;
+
+    }
+
+
+    const text =
+      selection
+        .toString()
+        .trim();
+
+
+    if (!text) {
+      return;
+    }
+
+
+    const range =
+      selection.getRangeAt(0);
+
+
+    const pageDiv =
+      range.commonAncestorContainer
+        .parentElement
+        ?.closest(".pdf-page");
+
+
+    if (!pageDiv) {
+      return;
+    }
+
+
+    const pageNumber =
+      Number(
+        pageDiv.dataset.page
+      );
+
+
+    const rect =
+      range.getBoundingClientRect();
+
+
+    const pageRect =
+      pageDiv.getBoundingClientRect();
+
+
+    const highlight = {
+
+      id:
+        crypto.randomUUID(),
+
+      page:
+        pageNumber,
+
+      text:
+        text,
+
+      top:
+        rect.top -
+        pageRect.top,
+
+      left:
+        rect.left -
+        pageRect.left,
+
+      width:
+        rect.width,
+
+      height:
+        Math.max(
+          rect.height,
+          10
+        )
+
+    };
+
+
+    allHighlights.push(
+      highlight
+    );
+
+
+    drawHighlight(
+      highlight
+    );
+
+
+    selection.removeAllRanges();
+
+
+    await saveHighlight(
+      highlight
+    );
+
+  }
+);
+
+
+/* =====================================================
+   DRAW HIGHLIGHT
+===================================================== */
+
+function drawHighlight(
+  highlight
+) {
+
+  const pageDiv =
+    document.querySelector(
+      `.pdf-page[data-page="${highlight.page}"]`
+    );
+
+
+  if (!pageDiv) {
+    return;
+  }
+
+
+  const layer =
+    pageDiv.querySelector(
+      ".highlight-layer"
+    );
+
+
+  if (!layer) {
+    return;
+  }
+
+
+  const element =
+    document.createElement(
+      "div"
+    );
+
+
+  element.className =
+    "highlight";
+
+
+  element.dataset.id =
+    highlight.id;
+
+
+  element.style.top =
+    `${highlight.top}px`;
+
+
+  element.style.left =
+    `${highlight.left}px`;
+
+
+  element.style.width =
+    `${highlight.width}px`;
+
+
+  element.style.height =
+    `${highlight.height}px`;
+
+
+  element.title =
+    "Tap to select highlight";
+
+
+  element.addEventListener(
+    "click",
+    function(event) {
+
+      event.stopPropagation();
+
+      selectHighlight(
+        highlight.id
+      );
+
+    }
+  );
+
+
+  layer.appendChild(
+    element
+  );
+
+}
+
+
+/* =====================================================
+   SELECT HIGHLIGHT
+===================================================== */
+
+function selectHighlight(id) {
+
+  document
+    .querySelectorAll(
+      ".highlight.selected"
+    )
+    .forEach(
+      element => {
+
+        element.classList.remove(
+          "selected"
+        );
+
+      }
+    );
+
+
+  const element =
+    document.querySelector(
+      `.highlight[data-id="${id}"]`
+    );
+
+
+  if (!element) {
+    return;
+  }
+
+
+  element.classList.add(
+    "selected"
+  );
+
+
+  selectedHighlightId =
+    id;
+
+
+  document
+    .getElementById(
+      "help"
+    )
+    .textContent =
+      "Highlight selected → tap 🗑️ Remove";
+
+
+}
+
+
+/* =====================================================
+   REMOVE SELECTED HIGHLIGHT
+===================================================== */
+
+window.removeSelectedHighlight =
+  async function() {
+
+    if (!selectedHighlightId) {
+
+      alert(
+        "Pehle jis highlight ko remove karna hai us par tap karo."
+      );
+
+      return;
+
+    }
+
+
+    await removeHighlight(
+      selectedHighlightId
+    );
+
+  };
+
+
+/* =====================================================
+   LOAD SAVED HIGHLIGHTS
+===================================================== */
+
+async function loadSavedHighlights() {
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/highlights/${BOOK_ID}`
+      );
+
+
+    if (!response.ok) {
+
+      console.warn(
+        "No saved highlights API."
+      );
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    allHighlights =
+      data.highlights || [];
+
+
+    for (
+      const highlight of allHighlights
+    ) {
+
+      drawHighlight(
+        highlight
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Highlight load error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   SAVE ONE HIGHLIGHT
+===================================================== */
+
+async function saveHighlight(
+  highlight
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/highlights/${BOOK_ID}`,
+        {
+
+          method:
+            "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify(
+              highlight
+            )
+
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Save failed"
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Highlight save error:",
+      error
+    );
+
+    alert(
+      "Highlight could not be saved."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   SAVE ALL
+===================================================== */
+
+window.saveAllHighlights =
+  async function() {
+
+    if (
+      allHighlights.length === 0
+    ) {
+
+      alert(
+        "There are no highlights yet."
+      );
+
+      return;
+
+    }
+
+
+    let success = true;
+
+
+    for (
+      const highlight of allHighlights
+    ) {
+
+      try {
+
+        const response =
+          await fetch(
+            `/api/highlights/${BOOK_ID}`,
+            {
+
+              method:
+                "POST",
+
+              headers: {
+
+                "Content-Type":
+                  "application/json"
+
+              },
+
+              body:
+                JSON.stringify(
+                  highlight
+                )
+
+            }
+          );
+
+
+        if (!response.ok) {
+          success = false;
+        }
+
+      } catch (error) {
+
+        success = false;
+
+      }
+
+    }
+
+
+    if (success) {
+
+      alert(
+        "Highlights saved to your library ✨"
+      );
+
+    } else {
+
+      alert(
+        "Some highlights could not be saved."
+      );
+
+    }
+
+  };
+
+
+/* =====================================================
+   REMOVE HIGHLIGHT
+===================================================== */
+
+async function removeHighlight(
+  id
+) {
+
+  const confirmed =
+    confirm(
+      "Remove this highlight?"
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/highlights/${BOOK_ID}/${encodeURIComponent(id)}`,
+        {
+
+          method:
+            "DELETE"
+
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Delete failed"
+      );
+
+    }
+
+
+    allHighlights =
+      allHighlights.filter(
+        h =>
+          h.id !== id
+      );
+
+
+    const element =
+      document.querySelector(
+        `.highlight[data-id="${CSS.escape(id)}"]`
+      );
+
+
+    if (element) {
+
+      element.remove();
+
+    }
+
+
+    if (
+      selectedHighlightId === id
+    ) {
+
+      selectedHighlightId =
+        null;
+
+    }
+
+
+    document
+      .getElementById(
+        "help"
+      )
+      .textContent =
+        "Select text → tap Highlight 🖍️";
+
+
+  } catch (error) {
+
+    console.error(
+      "Remove highlight error:",
+      error
+    );
+
+
+    alert(
+      "Could not remove highlight."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   SHARE
+===================================================== */
+
+window.sharePdf =
+  async function() {
+
+    const url =
+      location.origin +
+      "{{ url_for('pdf',id=book.id) }}";
+
+
+    if (
+      navigator.share
+    ) {
+
+      try {
+
+        await navigator.share({
+
+          title:
+            {{ book.title|tojson }},
+
+          text:
+            "Read this PDF from My Library",
+
+          url:
+            url
+
+        });
+
+        return;
+
+      } catch (e) {}
+
+    }
+
+
+    try {
+
+      await navigator.clipboard
+        .writeText(url);
+
+
+      alert(
+        "PDF link copied."
+      );
+
+    } catch (e) {
+
+      prompt(
+        "Copy this PDF link:",
+        url
+      );
+
+    }
+
+  };
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadPDF();
+
 </script>
+
 </body>
 </html>
