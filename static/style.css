@@ -1,48 +1,913 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Patrick+Hand&display=swap');
-:root{--bg:#09070e;--panel:#15121d;--panel2:#191621;--line:#302b3b;--text:#f4f1f7;--muted:#aaa4b4;--purple:#9b63e8;--purple2:#7350aa;--glow:#6f4a9e}
-*{box-sizing:border-box}html{background:#050408}body{margin:0;background:radial-gradient(circle at 85% 5%,#21143a 0,transparent 25%),var(--bg);color:var(--text);font-family:'DM Sans',Arial,sans-serif;min-height:100vh}.phone{width:min(100%,760px);margin:auto;padding:0 24px 55px;overflow:hidden}.topbar{height:78px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;background:rgba(9,7,14,.88);backdrop-filter:blur(14px)}.top-title{font-weight:600;font-size:26px;letter-spacing:-.5px}.top-actions{display:flex;gap:10px}.circle-btn{width:48px;height:48px;border-radius:50%;border:1px solid #514c5b;background:#211f28;color:white;font-size:37px;line-height:38px;cursor:pointer}.circle-btn.small{font-size:29px}.circle-btn.back{text-decoration:none;display:grid;place-items:center;font-size:36px}.hero{height:300px;border-bottom:1px solid #282432;position:relative;padding:82px 8px 0;background:radial-gradient(circle at 85% 25%,rgba(132,89,197,.3),transparent 22%)}.hero:after{content:"";position:absolute;right:36px;top:35px;width:58px;height:58px;border-radius:50%;background:#0b0910;box-shadow:-10px 0 0 #c69cf8}.stars{position:absolute;top:42px;left:18px;color:#8d63c3;font-size:24px}.moon{position:absolute;right:26px;top:30px;font-size:60px;color:#d7b5ff;transform:rotate(-15deg)}.hero-title{font-family:'Patrick Hand',cursive;font-size:58px;line-height:1}.hero-sub{color:#98929f;font-size:20px;line-height:1.35;max-width:600px;margin-top:12px}.add-card,.chat-card,.highlight-card{background:linear-gradient(145deg,#16131d,#121018);border:1px solid #312c3b;border-radius:13px;box-shadow:0 0 0 1px rgba(255,255,255,.02) inset}.add-card{padding:16px;margin-top:26px}.file-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:#aaa4b4}.choose{border:0;background:#f1eff4;color:#222;border-radius:12px;padding:8px 14px;font-size:16px}.field-row{display:flex;gap:10px;margin-top:10px}.field-row input,.field-row select,.search-panel input,.edit-form input,.edit-form select,.ask-row input{background:#1a1722;border:1px solid #302a3a;color:#eee;border-radius:9px;padding:14px;font-size:17px;outline:none}.field-row input{flex:1}.field-row select{flex:1}.add-btn,.ask-row button,.search-panel button{background:#b16cf4;color:#190b29;border:0;border-radius:10px;padding:13px 21px;font-size:17px;font-weight:600}.stored{color:#96909e;font-size:14px;margin-top:8px}.tabs{display:flex;gap:27px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid #2a2632;margin-top:22px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tabs a{color:#9f9aa7;text-decoration:none;font-size:17px;padding:0 1px 14px}.tabs a.active{color:#b884f2;border-bottom:3px solid #a66aef}.search-panel{display:none;margin-top:14px}.search-panel.open{display:block}.search-panel form{display:flex;gap:8px}.search-panel input{flex:1}.shelf{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}.book-card{background:#17141e;border:1px solid #302b3b;border-radius:13px;padding:18px 18px 15px;min-width:0}.book-cover{height:122px;border-radius:7px;background:linear-gradient(145deg,#5f3f8e,#7b5aa9);display:grid;place-items:center;text-decoration:none;box-shadow:inset 0 0 40px rgba(255,255,255,.06)}.book-cover span{font-size:42px}.book-title{font-size:20px;margin-top:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.book-meta{color:#9a94a3;margin-top:5px;font-size:15px}.card-actions{display:flex;gap:10px;margin-top:12px;align-items:center}.card-actions a,.card-actions button{color:#c99cff;text-decoration:none;background:transparent;border:0;font:inherit;cursor:pointer;padding:0}.card-actions form{margin:0}.empty{border:1px dashed #37313f;border-radius:12px;height:155px;display:grid;place-items:center;color:#96909e;margin-top:28px;font-size:19px}.highlight-section,.word-section{margin-top:46px}.highlight-section h2,.word-section h2{font-family:'Patrick Hand',cursive;color:#b379ed;font-size:31px;font-weight:400;margin:0 0 14px}.highlight-card{padding:26px;font-size:22px;line-height:1.65;color:#bbb5c1}.highlight-card mark{background:#74549b;color:#f6efff;border-radius:2px;padding:0 4px}.chat-card{padding:22px 20px}.bubble{max-width:88%;padding:15px 18px;border-radius:7px;font-size:20px;line-height:1.35;margin:10px 0}.user-bubble{margin-left:auto;background:#1d1926;color:#f1edf4;width:max-content}.bot-bubble{background:#654c98;color:#fff}.ask-row{display:flex;gap:9px;margin-top:14px}.ask-row input{flex:1;min-width:0}.ask-row button{min-width:75px}footer{text-align:center;color:#827c89;font-size:15px;line-height:1.4;margin-top:46px;padding:0 8px}.edit-wrap{padding-top:35px}.edit-wrap h2{font-family:'Patrick Hand',cursive;font-size:35px;color:#b379ed}.edit-form{display:grid;gap:15px;background:#15121d;border:1px solid #312c3b;border-radius:13px;padding:22px}.edit-form label{color:#aaa4b4}.edit-form input,.edit-form select{width:100%;margin-top:7px}.edit-form .add-btn{margin-top:8px}@media(max-width:520px){.phone{padding:0 24px 50px}.top-title{font-size:25px}.hero{height:290px;padding-top:150px}.hero-title{font-size:54px}.hero-sub{font-size:18px}.shelf{gap:16px}.book-card{padding:16px}.book-cover{height:115px}.book-title{font-size:18px}.highlight-card,.bubble{font-size:18px}.field-row{gap:7px}.field-row input,.field-row select{min-width:0}.tabs{gap:25px}}
 
-/* Mobile / touch improvements */
-html{scroll-behavior:smooth}
-button,a,input,select{touch-action:manipulation}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #b16cf4;outline-offset:2px}
-.primary-link{font-weight:600}
-.card-actions{flex-wrap:wrap}
-.card-actions form{display:inline}
-@media(max-width:600px){
-  .phone{width:100%;padding:0 14px 40px}
-  .topbar{height:64px}
-  .top-title{font-size:22px}
-  .circle-btn{width:43px;height:43px}
-  .circle-btn.small{font-size:25px}
-  .hero{height:265px;padding:132px 4px 0}
-  .hero-title{font-size:50px}
-  .hero-sub{font-size:16px;max-width:95%}
-  .add-card{padding:14px;margin-top:18px}
-  .field-row{display:grid;grid-template-columns:1fr;gap:8px}
-  .field-row input,.field-row select,.add-btn{width:100%;min-height:48px}
-  .choose{min-height:46px}
-  .file-row{align-items:center;flex-wrap:wrap}
-  .stored{font-size:13px;line-height:1.45}
-  .tabs{gap:18px;margin-top:18px}
-  .tabs a{font-size:15px;padding-bottom:11px}
-  .shelf{grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
-  .book-card{padding:12px;border-radius:12px}
-  .book-cover{height:110px}
-  .book-cover span{font-size:36px}
-  .book-title{font-size:16px;margin-top:9px}
-  .book-meta{font-size:12px}
-  .card-actions{gap:8px;font-size:13px;line-height:1.7}
-  .card-actions a,.card-actions button{padding:2px 0}
-  .highlight-section,.word-section{margin-top:34px}
-  .highlight-card{padding:18px;font-size:17px}
-  .chat-card{padding:15px}
-  .bubble{font-size:16px;padding:12px 14px}
-  .ask-row{gap:6px}
-  .ask-row input{font-size:16px;min-height:46px}
-  .ask-row button{min-height:46px;padding:10px 15px}
+:root {
+  --bg: #09070e;
+  --panel: #15121d;
+  --panel2: #191621;
+  --line: #302b3b;
+  --text: #f4f1f7;
+  --muted: #aaa4b4;
+  --purple: #9b63e8;
+  --purple2: #7350aa;
+  --glow: #6f4a9e;
 }
-@media(max-width:380px){
-  .shelf{grid-template-columns:1fr}
-  .book-cover{height:125px}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #050408;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      #21143a 0,
+      transparent 25%
+    ),
+    var(--bg);
+
+  color: var(--text);
+
+  font-family:
+    'DM Sans',
+    Arial,
+    sans-serif;
+
+  min-height: 100vh;
+}
+
+button,
+a,
+input,
+select {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #b16cf4;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   MAIN PHONE
+========================================================= */
+
+.phone {
+  width: min(100%, 760px);
+  margin: auto;
+  padding: 0 24px 55px;
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar {
+  height: 78px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 10;
+
+  background: rgba(9, 7, 14, .88);
+
+  backdrop-filter: blur(14px);
+}
+
+.top-title {
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -.5px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.circle-btn {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  border: 1px solid #514c5b;
+
+  background: #211f28;
+
+  color: white;
+
+  font-size: 37px;
+
+  line-height: 38px;
+
+  cursor: pointer;
+}
+
+.circle-btn.small {
+  font-size: 29px;
+}
+
+.circle-btn.back {
+  text-decoration: none;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 36px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  height: 300px;
+
+  border-bottom: 1px solid #282432;
+
+  position: relative;
+
+  padding: 82px 8px 0;
+
+  background:
+    radial-gradient(
+      circle at 85% 25%,
+      rgba(132, 89, 197, .3),
+      transparent 22%
+    );
+}
+
+.hero:after {
+  content: "";
+
+  position: absolute;
+
+  right: 36px;
+  top: 35px;
+
+  width: 58px;
+  height: 58px;
+
+  border-radius: 50%;
+
+  background: #0b0910;
+
+  box-shadow:
+    -10px 0 0 #c69cf8;
+}
+
+.stars {
+  position: absolute;
+
+  top: 42px;
+  left: 18px;
+
+  color: #8d63c3;
+
+  font-size: 24px;
+}
+
+.moon {
+  position: absolute;
+
+  right: 26px;
+  top: 30px;
+
+  font-size: 60px;
+
+  color: #d7b5ff;
+
+  transform: rotate(-15deg);
+}
+
+.hero-title {
+  font-family: 'Patrick Hand', cursive;
+
+  font-size: 58px;
+
+  line-height: 1;
+}
+
+.hero-sub {
+  color: #98929f;
+
+  font-size: 20px;
+
+  line-height: 1.35;
+
+  max-width: 600px;
+
+  margin-top: 12px;
+}
+
+
+/* =========================================================
+   ADD BOOK CARD
+========================================================= */
+
+.add-card,
+.chat-card,
+.highlight-card {
+  background:
+    linear-gradient(
+      145deg,
+      #16131d,
+      #121018
+    );
+
+  border: 1px solid #312c3b;
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.02) inset;
+}
+
+.add-card {
+  padding: 16px;
+
+  margin-top: 26px;
+}
+
+.file-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 10px;
+
+  color: #aaa4b4;
+}
+
+.choose {
+  border: 0;
+
+  background: #f1eff4;
+
+  color: #222;
+
+  border-radius: 12px;
+
+  padding: 8px 14px;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.field-row {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.field-row input,
+.field-row select,
+.search-panel input,
+.edit-form input,
+.edit-form select,
+.ask-row input {
+  background: #1a1722;
+
+  border: 1px solid #302a3a;
+
+  color: #eee;
+
+  border-radius: 9px;
+
+  padding: 14px;
+
+  font-size: 17px;
+
+  outline: none;
+}
+
+.field-row input {
+  flex: 1;
+}
+
+.field-row select {
+  flex: 1;
+}
+
+.add-btn,
+.ask-row button,
+.search-panel button {
+  background: #b16cf4;
+
+  color: #190b29;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  padding: 13px 21px;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.stored {
+  color: #96909e;
+
+  font-size: 14px;
+
+  margin-top: 8px;
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.tabs {
+  display: flex;
+
+  gap: 27px;
+
+  overflow-x: auto;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #2a2632;
+
+  margin-top: 22px;
+
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs a {
+  color: #9f9aa7;
+
+  text-decoration: none;
+
+  font-size: 17px;
+
+  padding: 0 1px 14px;
+}
+
+.tabs a.active {
+  color: #b884f2;
+
+  border-bottom: 3px solid #a66aef;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-panel {
+  display: none;
+
+  margin-top: 14px;
+}
+
+.search-panel.open {
+  display: block;
+}
+
+.search-panel form {
+  display: flex;
+
+  gap: 8px;
+}
+
+.search-panel input {
+  flex: 1;
+}
+
+
+/* =========================================================
+   BOOK SHELF
+========================================================= */
+
+.shelf {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 18px;
+
+  margin-top: 28px;
+}
+
+.book-card {
+  background: #17141e;
+
+  border: 1px solid #302b3b;
+
+  border-radius: 13px;
+
+  padding: 18px 18px 15px;
+
+  min-width: 0;
+}
+
+.book-cover {
+  height: 122px;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #5f3f8e,
+      #7b5aa9
+    );
+
+  display: grid;
+
+  place-items: center;
+
+  text-decoration: none;
+
+  box-shadow:
+    inset 0 0 40px rgba(255,255,255,.06);
+}
+
+.book-cover span {
+  font-size: 42px;
+}
+
+.book-title {
+  font-size: 20px;
+
+  margin-top: 12px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.book-meta {
+  color: #9a94a3;
+
+  margin-top: 5px;
+
+  font-size: 15px;
+}
+
+.card-actions {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 12px;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+}
+
+.card-actions a,
+.card-actions button {
+  color: #c99cff;
+
+  text-decoration: none;
+
+  background: transparent;
+
+  border: 0;
+
+  font: inherit;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+.card-actions form {
+  margin: 0;
+
+  display: inline;
+}
+
+.primary-link {
+  font-weight: 600;
+}
+
+.empty {
+  border: 1px dashed #37313f;
+
+  border-radius: 12px;
+
+  height: 155px;
+
+  display: grid;
+
+  place-items: center;
+
+  color: #96909e;
+
+  margin-top: 28px;
+
+  font-size: 19px;
+}
+
+
+/* =========================================================
+   HIGHLIGHT SECTION
+========================================================= */
+
+.highlight-section,
+.word-section {
+  margin-top: 46px;
+}
+
+.highlight-section h2,
+.word-section h2 {
+  font-family: 'Patrick Hand', cursive;
+
+  color: #b379ed;
+
+  font-size: 31px;
+
+  font-weight: 400;
+
+  margin: 0 0 14px;
+}
+
+.highlight-card {
+  padding: 26px;
+
+  font-size: 22px;
+
+  line-height: 1.65;
+
+  color: #bbb5c1;
+}
+
+
+/* =========================================================
+   TEXT HIGHLIGHT
+========================================================= */
+
+.highlight-card mark {
+  background: #74549b;
+
+  color: #f6efff;
+
+  border-radius: 2px;
+
+  padding: 0 4px;
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+.chat-card {
+  padding: 22px 20px;
+}
+
+.bubble {
+  max-width: 88%;
+
+  padding: 15px 18px;
+
+  border-radius: 7px;
+
+  font-size: 20px;
+
+  line-height: 1.35;
+
+  margin: 10px 0;
+}
+
+.user-bubble {
+  margin-left: auto;
+
+  background: #1d1926;
+
+  color: #f1edf4;
+
+  width: max-content;
+}
+
+.bot-bubble {
+  background: #654c98;
+
+  color: #fff;
+}
+
+.ask-row {
+  display: flex;
+
+  gap: 9px;
+
+  margin-top: 14px;
+}
+
+.ask-row input {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.ask-row button {
+  min-width: 75px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+  text-align: center;
+
+  color: #827c89;
+
+  font-size: 15px;
+
+  line-height: 1.4;
+
+  margin-top: 46px;
+
+  padding: 0 8px;
+}
+
+
+/* =========================================================
+   EDIT PAGE
+========================================================= */
+
+.edit-wrap {
+  padding-top: 35px;
+}
+
+.edit-wrap h2 {
+  font-family: 'Patrick Hand', cursive;
+
+  font-size: 35px;
+
+  color: #b379ed;
+}
+
+.edit-form {
+  display: grid;
+
+  gap: 15px;
+
+  background: #15121d;
+
+  border: 1px solid #312c3b;
+
+  border-radius: 13px;
+
+  padding: 22px;
+}
+
+.edit-form label {
+  color: #aaa4b4;
+}
+
+.edit-form input,
+.edit-form select {
+  width: 100%;
+
+  margin-top: 7px;
+}
+
+.edit-form .add-btn {
+  margin-top: 8px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .phone {
+    width: 100%;
+
+    padding:
+      0
+      14px
+      40px;
+  }
+
+  .topbar {
+    height: 64px;
+  }
+
+  .top-title {
+    font-size: 22px;
+  }
+
+  .circle-btn {
+    width: 43px;
+    height: 43px;
+  }
+
+  .circle-btn.small {
+    font-size: 25px;
+  }
+
+  .hero {
+    height: 265px;
+
+    padding:
+      132px
+      4px
+      0;
+  }
+
+  .hero-title {
+    font-size: 50px;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+
+    max-width: 95%;
+  }
+
+  .add-card {
+    padding: 14px;
+
+    margin-top: 18px;
+  }
+
+  .field-row {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+  }
+
+  .field-row input,
+  .field-row select,
+  .add-btn {
+    width: 100%;
+
+    min-height: 48px;
+  }
+
+  .choose {
+    min-height: 46px;
+  }
+
+  .file-row {
+    align-items: center;
+
+    flex-wrap: wrap;
+  }
+
+  .stored {
+    font-size: 13px;
+
+    line-height: 1.45;
+  }
+
+  .tabs {
+    gap: 18px;
+
+    margin-top: 18px;
+  }
+
+  .tabs a {
+    font-size: 15px;
+
+    padding-bottom: 11px;
+  }
+
+  .shelf {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 20px;
+  }
+
+  .book-card {
+    padding: 12px;
+
+    border-radius: 12px;
+  }
+
+  .book-cover {
+    height: 110px;
+  }
+
+  .book-cover span {
+    font-size: 36px;
+  }
+
+  .book-title {
+    font-size: 16px;
+
+    margin-top: 9px;
+  }
+
+  .book-meta {
+    font-size: 12px;
+  }
+
+  .card-actions {
+    gap: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    padding: 2px 0;
+  }
+
+  .highlight-section,
+  .word-section {
+    margin-top: 34px;
+  }
+
+  .highlight-card {
+    padding: 18px;
+
+    font-size: 17px;
+  }
+
+  .chat-card {
+    padding: 15px;
+  }
+
+  .bubble {
+    font-size: 16px;
+
+    padding:
+      12px
+      14px;
+  }
+
+  .ask-row {
+    gap: 6px;
+  }
+
+  .ask-row input {
+    font-size: 16px;
+
+    min-height: 46px;
+  }
+
+  .ask-row button {
+    min-height: 46px;
+
+    padding:
+      10px
+      15px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .shelf {
+    grid-template-columns: 1fr;
+  }
+
+  .book-cover {
+    height: 125px;
+  }
+
 }
