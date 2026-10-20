@@ -1,60 +1,88 @@
-# My Mini Library — phone friendly + live ready
+# 📚 My Mini Library
 
-Flask + MongoDB Atlas + GridFS + Ollama.
+An AI-powered mini library built with Flask, MongoDB Atlas, GridFS, and Ollama. It helps users upload, store, read, download, and manage PDF books across devices.
 
-## What was fixed
+## 🚀 Live Demo
 
-- PDFs are stored in MongoDB Atlas GridFS, so the same PDF can be opened from another phone/laptop using the same live website.
-- Added a dedicated mobile PDF reader at `/read/<id>`.
-- Added browser-inline PDF viewing at `/pdf/<id>`.
-- Added a real download route at `/download/<id>`.
-- Added a Share button on the PDF reader. On supported phones it uses the phone's share sheet; otherwise it copies the PDF link.
-- Mobile layout, buttons, forms and book cards are responsive.
-- Uploads are limited to 50 MB by default.
-- Added Gunicorn + Render configuration for production.
-- Local Ollama and Ollama Cloud are selected through environment variables.
-- Secrets are not included in this ZIP. Use `.env.example` locally and Render Environment Variables for deployment.
+[**Open My Mini Library 📖**](https://my-mini-library.onrender.com)
 
-## Local run
+## ✨ Features
 
-1. Copy `.env.example` to `.env`.
-2. Put your MongoDB Atlas URI in `.env`.
-3. Start local Ollama and make sure `llama3.2:latest` exists.
-4. Run:
+* 📤 Upload PDF books
+* ☁️ Store PDFs using MongoDB Atlas GridFS
+* 📖 Read PDFs directly in the browser
+* 📱 Mobile-friendly PDF reader
+* 📥 Download and share PDF files
+* 🤖 AI integration using Ollama
+* 🔗 Access stored books across devices
+* 🔒 Environment-based configuration
+* 🎨 Responsive interface for mobile and desktop
 
-```cmd
-pip install -r requirements.txt
-python app.py
-```
+## 🛠️ Technologies Used
 
-5. Open `http://127.0.0.1:5000`.
+* Python
+* Flask
+* MongoDB Atlas
+* GridFS
+* Ollama AI
+* HTML, CSS, JavaScript
+* Gunicorn
+* Render
 
-## Live on Render
+## 💻 Run Locally
 
-Push this project to GitHub, then create a Render Web Service from the repository.
+1. Clone the repository:
 
-Build command:
+   ```bash
+   git clone https://github.com/DUAA-CTRL/my-mini-library.git
+   ```
 
-```text
-pip install -r requirements.txt
-```
+2. Open the project folder:
 
-Start command:
+   ```bash
+   cd my-mini-library
+   ```
 
-```text
-gunicorn --bind 0.0.0.0:$PORT app:app
-```
+3. Install dependencies:
 
-Set these Render Environment Variables:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- `MONGO_URI` = your MongoDB Atlas connection string
-- `MONGO_DB` = `my_library`
-- `SECRET_KEY` = a strong random value (or let render.yaml generate it)
-- `OLLAMA_URL` = `https://ollama.com`
-- `OLLAMA_API_KEY` = your Ollama Cloud API key
-- `OLLAMA_MODEL` = a model available to your Ollama account, for example `gpt-oss:20b`
+4. Configure the required environment variables for MongoDB and Ollama.
 
-Do NOT put MongoDB or Ollama secrets into `render.yaml` or GitHub.
+5. Run the application:
 
-Once Render gives you a public `https://...onrender.com` URL, open that same URL on your phone. Uploading a PDF there stores it in MongoDB Atlas, and another phone opening the same live URL will see it in the library.
+   ```bash
+   python app.py
+   ```
 
+6. Open `http://127.0.0.1:5000` in your browser.
+
+## 📚 What I Learned
+
+* Building web applications using Flask
+* Integrating MongoDB Atlas and GridFS
+* Uploading and serving PDF files
+* Creating responsive web interfaces
+* Integrating AI services using Ollama
+* Managing environment variables and deployment configuration
+
+## 🔮 Future Improvements
+
+* Add user registration and login
+* Create personal libraries for individual users
+* Improve AI-powered book summaries and search
+* Add book categories, tags, and favourites
+* Enhance cloud deployment and data management
+* Develop a dedicated database solution as the project grows
+
+## 👩‍💻 Author
+
+**DUAA-CTRL**
+
+GitHub: [@DUAA-CTRL](https://github.com/DUAA-CTRL)
+
+---
+
+*Built with 📚 and 💗 to make reading and managing digital books easier.*
